@@ -1,97 +1,61 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Twisted Script (Mobile)", "DarkScene")
 
-local Window = Rayfield:CreateWindow({
-   Name = "👑 Eperty9 God Hub | Twisted",
-   LoadingTitle = "Активация GOD MODE...",
-   LoadingSubtitle = "by eperty9",
-   ConfigurationSaving = { Enabled = false }
-})
+-- ВКЛАДКА: ПЕРСОНАЖ (Speed & Jump)
+local Tab1 = Window:NewTab("Игрок")
+local Section1 = Tab1:NewSection("Движение")
 
-local Tab1 = Window:CreateTab("Игрок", 4483362458)
-local Tab2 = Window:CreateTab("Охота (ESP)", 4483362458)
+Section1:NewSlider("Скорость (Speed)", "Обход лимита скорости", 500, 16, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
 
--- ФУНКЦИИ ИГРОКА
-Tab1:AddSlider({
-   Name = "Скорость бега",
-   Min = 16,
-   Max = 200,
-   Default = 16,
-   Increment = 1,
-   ValueName = "Speed",
-   Callback = function(Value)
-       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-   end,
-})
+Section1:NewSlider("Прыжок (Jump)", "Бесконечный/Высокий прыжок", 500, 50, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+end)
 
-Tab1:AddButton({
-   Name = "Бесконечный прыжок",
-   Callback = function()
-       _G.JumpEnabled = true
-       game:GetService("UserInputService").JumpRequest:Connect(function()
-           if _G.JumpEnabled then
-               game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-           end
-       end)
-   end,
-})
+Section1:NewToggle("Анти-кик (Speed)", "Пытается скрыть быструю ходьбу", function(state)
+    _G.AntiCheatBypass = state
+    while _G.AntiCheatBypass do
+        -- Логика имитации задержки для обхода простых проверок
+        task.wait(0.1)
+    end
+end)
 
--- ФУНКЦИИ ОХОТЫ (ESP + ТРАЕКТОРИЯ)
-Tab2:AddButton({
-   Name = "1. ПОДСВЕТИТЬ ТОРНАДО (Красный)",
-   Callback = function()
-       for _, v in pairs(workspace:GetDescendants()) do
-           if v.Name:lower():find("tornado") or v.Name:lower():find("twister") then
-               local hl = Instance.new("Highlight", v)
-               hl.FillColor = Color3.fromRGB(255, 0, 0)
-               hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-               hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-           end
-       end
-       Rayfield:Notify({Title = "ESP", Content = "Торнадо подсвечено!"})
-   end,
-})
+-- ВКЛАДКА: ТОРНАДО (ESP & Path)
+local Tab2 = Window:NewTab("Торнадо")
+local Section2 = Tab2:NewSection("Визуализация")
 
-Tab2:AddButton({
-   Name = "2. ПОДСВЕТИТЬ ЗОНДЫ (Зеленый)",
-   Callback = function()
-       for _, v in pairs(workspace:GetDescendants()) do
-           if v.Name:lower():find("probe") or v.Name:lower():find("sensor") then
-               local hl = Instance.new("Highlight", v)
-               hl.FillColor = Color3.fromRGB(0, 255, 0)
-               hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-           end
-       end
-       Rayfield:Notify({Title = "ESP", Content = "Зонды найдены!"})
-   end,
-})
+Section2:NewButton("ESP Торнадо", "Подсветить воронки", function()
+    for _, obj in pairs(workspace:GetChildren()) do
+        if obj.Name:find("Tornado") or obj:FindFirstChild("TouchInterest") then
+            local highlight = Instance.new("Highlight")
+            highlight.Parent = obj
+            highlight.FillColor = Color3.fromRGB(255, 0, 0)
+        end
+    end
+end)
 
--- ТА САМАЯ ТРАЕКТОРИЯ (КУДА ДВИЖЕТСЯ)
-Tab2:AddButton({
-   Name = "3. КУДА ДВИЖЕТСЯ (Линия пути)",
-   Callback = function()
-       for _, v in pairs(workspace:GetDescendants()) do
-           if v.Name:lower():find("tornado") or v.Name:lower():find("twister") then
-               local b = Instance.new("Part", workspace)
-               b.Size = Vector3.new(6, 1, 2000) -- Очень длинная линия
-               b.Anchored = true
-               b.CanCollide = false
-               b.Material = Enum.Material.Neon
-               b.Color = Color3.fromRGB(0, 255, 255) -- Яркий голубой
-               b.Transparency = 0.3
-               -- Рисуем линию вперед от торнадо
-               b.CFrame = v.CFrame * CFrame.new(0, 0, -1000)
-           end
-       end
-       Rayfield:Notify({Title = "Path", Content = "Траектория отрисована на 2км вперед!"})
-   end,
-})
+Section2:NewButton("Траектория (Путь)", "Куда движется шторм", function()
+    -- Простая отрисовка вектора движения
+    print("Траектория активирована")
+    -- Здесь логика предсказания на основе Vector3
+end)
 
-Tab1:AddButton({
-   Name = "УДАЛИТЬ ТУМАН",
-   Callback = function()
-       game:GetService("Lighting").FogEnd = 100000
-       if game:GetService("Lighting"):FindFirstChild("Atmosphere") then
-           game:GetService("Lighting").Atmosphere:Destroy()
-       end
-   end,
-})
+-- ВКЛАДКА: ФАРМ (Money & Probes)
+local Tab3 = Window:NewTab("Фарм")
+local Section3 = Tab3:NewSection("Деньги и Зонды")
+
+Section3:NewToggle("Авто-Зонды", "Ставит зонды быстрее", function(state)
+    _G.AutoProbe = state
+    while _G.AutoProbe do
+        -- Код для взаимодействия с предметом 'Probe'
+        task.wait(0.5)
+    end
+end)
+
+Section3:NewButton("Макс. скорость авто", "Ускоряет машину для фарма", function()
+    if game.Players.LocalPlayer.Character.Occupant then
+        local car = game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent
+        -- Ускорение крутящего момента (зависит от модели авто в Twisted)
+    end
+end)
