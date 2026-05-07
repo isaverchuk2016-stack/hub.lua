@@ -1,99 +1,78 @@
  local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "👑 Eperty9 God Hub | Twisted",
-   LoadingTitle = "Финальная сборка eperty9...",
-   LoadingSubtitle = "Version 6.0 (Fixed ESP)",
+   Name = "👑 Eperty9 God Hub | V6",
+   LoadingTitle = "Загрузка eperty9...",
+   LoadingSubtitle = "Stable Edition",
    ConfigurationSaving = { Enabled = false }
 })
 
 local Tab1 = Window:CreateTab("Игрок", 4483362458)
-local Tab2 = Window:CreateTab("Охота (ESP)", 4483362458)
+local Tab2 = Window:CreateTab("ESP", 4483362458)
 
--- ВКЛАДКА ИГРОК
-Tab1:CreateToggle({
-   Name = "Активировать обход скорости (Anti-Kick)",
-   CurrentValue = false,
+-- СКОРОСТЬ И ПРЫЖОК
+Tab1:CreateSlider({
+   Name = "Скорость (Безопасно)",
+   Range = {16, 100},
+   Increment = 1,
+   CurrentValue = 16,
    Callback = function(Value)
-       _G.SpeedEnabled = Value
-       spawn(function()
-           while _G.SpeedEnabled do
-               local char = game.Players.LocalPlayer.Character
-               if char and char:FindFirstChild("HumanoidRootPart") then
-                   local hum = char:FindFirstChild("Humanoid")
-                   if hum.MoveDirection.Magnitude > 0 then
-                       char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame + (hum.MoveDirection * (_G.SpeedValue / 50))
-                   end
-               end
-               task.wait()
-           end
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+   end,
+})
+
+Tab1:CreateButton({
+   Name = "Бесконечный прыжок",
+   Callback = function()
+       game:GetService("UserInputService").JumpRequest:Connect(function()
+           game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
        end)
    end,
 })
 
-Tab1:CreateSlider({
-   Name = "Настройка скорости",
-   Range = {1, 100},
-   Increment = 1,
-   CurrentValue = 16,
-   Callback = function(Value) _G.SpeedValue = Value end,
-})
-
-Tab1:CreateToggle({
-   Name = "Бесконечный прыжок",
-   CurrentValue = false,
-   Callback = function(Value) _G.InfJump = Value end,
-})
-
-game:GetService("UserInputService").JumpRequest:Connect(function()
-	if _G.InfJump then
-		game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-	end
-end)
-
--- ВКЛАДКА ESP (3 КНОПКИ)
-local SectionESP = Tab2:CreateSection("Визуалы")
-
--- 1. Кнопка для Торнадо
+-- ТРИ КНОПКИ ESP (УПРОЩЕННЫЕ)
 Tab2:CreateButton({
-   Name = "1. Подсветить ТОРНАДО (Красный)",
+   Name = "1. ПОДСВЕТИТЬ ТОРНАДО",
    Callback = function()
-       for _, obj in pairs(game:GetDescendants()) do
-           if obj.Name:lower():find("tornado") or obj.Name:lower():find("twister") then
-               local hl = Instance.new("Highlight", obj)
-               hl.FillColor = Color3.fromRGB(255, 0, 0)
-               hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+       for _, v in pairs(game.Workspace:GetDescendants()) do
+           if v.Name == "Tornado" or v.Name == "Twister" or v.Name:find("Storm") then
+               local p = Instance.new("Part", v)
+               p.Size = Vector3.new(20, 2000, 20)
+               p.Anchored = true
+               p.CanCollide = false
+               p.Color = Color3.fromRGB(255, 0, 0)
+               p.Transparency = 0.5
+               p.Material = "Neon"
            end
        end
-       Rayfield:Notify({Title = "ESP", Content = "Торнадо подсвечено красным!"})
    end,
 })
 
--- 2. Кнопка для Зондов (тех самых штук)
 Tab2:CreateButton({
-   Name = "2. Подсветить ЗОНДЫ (Зеленый)",
+   Name = "2. ПОДСВЕТИТЬ ЗОНДЫ",
    Callback = function()
-       for _, obj in pairs(game:GetDescendants()) do
-           if obj.Name:lower():find("probe") or obj.Name:lower():find("sensor") or obj.Name:lower():find("station") then
-               local hl = Instance.new("Highlight", obj)
-               hl.FillColor = Color3.fromRGB(0, 255, 0)
-               hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+       for _, v in pairs(game.Workspace:GetDescendants()) do
+           if v.Name:lower():find("probe") or v.Name:lower():find("sensor") then
+               local p = Instance.new("Part", v)
+               p.Size = Vector3.new(5, 1000, 5)
+               p.Anchored = true
+               p.CanCollide = false
+               p.Color = Color3.fromRGB(0, 255, 0)
+               p.Transparency = 0.5
+               p.Material = "Neon"
            end
        end
-       Rayfield:Notify({Title = "ESP", Content = "Зонды подсвечены зеленым!"})
    end,
 })
 
--- 3. Кнопка для Направления
 Tab2:CreateButton({
-   Name = "3. КУДА ДВИЖЕТСЯ (Линия)",
+   Name = "3. КУДА ДВИЖЕТСЯ",
    Callback = function()
-       for _, obj in pairs(game:GetDescendants()) do
-           if obj.Name:lower():find("tornado") or obj.Name:lower():find("twister") then
-               local root = obj:IsA("Model") and obj.PrimaryPart or obj
-               if root then
-                   local beam = Instance.new("Part", workspace)
-                   beam.Size = Vector3.new(2, 2, 300)
-                   beam.Anchored = true
-                   beam.CanCollide = false
-                   beam.Color = Color3.fromRGB(
+       for _, v in pairs(game.Workspace:GetDescendants()) do
+           if v.Name == "Tornado" or v.Name == "Twister" then
+               local b = Instance.new("Part", workspace)
+               b.Size = Vector3.new(2, 2, 500)
+               b.Anchored = true
+               b.CanCollide = false
+               b.Color = Color3.fromRGB(0, 255, 255)
+               b.CFrame = v.CFrame * CFrame.new(0
