@@ -2,58 +2,55 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "🔥 Eperty9 Raven | Twisted V8",
-   LoadingTitle = "Загрузка Raven Hub...",
+   LoadingTitle = "Raven Hub Loading...",
    LoadingSubtitle = "by eperty9",
    ConfigurationSaving = { Enabled = false }
 })
 
+-- Создаем вкладки
 local Tab1 = Window:CreateTab("Игрок", 4483362458)
 local Tab2 = Window:CreateTab("Охота (ESP)", 4483362458)
 
--- ПЕРСОНАЖ
-Tab1:AddSlider({
+-- Наполняем вкладку ИГРОК
+Tab1:CreateSlider({
    Name = "Скорость бега",
-   Min = 16,
-   Max = 150,
-   Default = 16,
-   Color = Color3.fromRGB(255, 255, 255),
+   Range = {16, 150},
    Increment = 1,
-   ValueName = "Speed",
+   Suffix = " Speed",
+   CurrentValue = 16,
    Callback = function(Value)
        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
    end,
 })
 
-Tab1:AddButton({
+Tab1:CreateButton({
    Name = "Бесконечный прыжок",
    Callback = function()
-       _G.InfJump = true
+       _G.JumpEnabled = true
        game:GetService("UserInputService").JumpRequest:Connect(function()
-           if _G.InfJump then
+           if _G.JumpEnabled then
                game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
            end
        end)
    end,
 })
 
--- ОХОТА (ESP)
-Tab2:AddButton({
-   Name = "1. ПОДСВЕТИТЬ ТОРНАДО (Красный)",
+-- Наполняем вкладку ESP
+Tab2:CreateButton({
+   Name = "1. ПОДСВЕТИТЬ ТОРНАДО",
    Callback = function()
        for _, v in pairs(workspace:GetDescendants()) do
            if v.Name:lower():find("tornado") or v.Name:lower():find("twister") then
                local hl = Instance.new("Highlight", v)
                hl.FillColor = Color3.fromRGB(255, 0, 0)
-               hl.OutlineColor = Color3.fromRGB(255, 255, 255)
                hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
            end
        end
-       Rayfield:Notify({Title = "Eperty9", Content = "Торнадо подсвечено!"})
    end,
 })
 
 Tab2:AddButton({
-   Name = "2. ПОДСВЕТИТЬ ЗОНДЫ (Зеленый)",
+   Name = "2. ПОДСВЕТИТЬ ЗОНДЫ",
    Callback = function()
        for _, v in pairs(workspace:GetDescendants()) do
            if v.Name:lower():find("probe") or v.Name:lower():find("sensor") then
@@ -62,12 +59,11 @@ Tab2:AddButton({
                hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
            end
        end
-       Rayfield:Notify({Title = "Eperty9", Content = "Зонды подсвечены!"})
    end,
 })
 
 Tab2:AddButton({
-   Name = "3. КУДА ДВИЖЕТСЯ (Линия)",
+   Name = "3. ПУТЬ ТОРНАДО",
    Callback = function()
        for _, v in pairs(workspace:GetDescendants()) do
            if v.Name:lower():find("tornado") or v.Name:lower():find("twister") then
@@ -83,7 +79,7 @@ Tab2:AddButton({
    end,
 })
 
-Tab2:AddButton({
+Tab1:CreateButton({
    Name = "УДАЛИТЬ ТУМАН",
    Callback = function()
        game:GetService("Lighting").FogEnd = 100000
