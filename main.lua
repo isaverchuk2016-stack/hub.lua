@@ -1,78 +1,56 @@
- local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("👑 Eperty9 God Hub", "SkylineTheme")
 
-local Window = Rayfield:CreateWindow({
-   Name = "👑 Eperty9 God Hub | V6",
-   LoadingTitle = "Загрузка eperty9...",
-   LoadingSubtitle = "Stable Edition",
-   ConfigurationSaving = { Enabled = false }
-})
+-- ВКЛАДКА ИГРОК
+local Tab1 = Window:NewTab("Игрок")
+local Section1 = Tab1:NewSection("Настройки")
 
-local Tab1 = Window:CreateTab("Игрок", 4483362458)
-local Tab2 = Window:CreateTab("ESP", 4483362458)
+Section1:NewSlider("Скорость", "Меняет скорость бега", 100, 16, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
 
--- СКОРОСТЬ И ПРЫЖОК
-Tab1:CreateSlider({
-   Name = "Скорость (Безопасно)",
-   Range = {16, 100},
-   Increment = 1,
-   CurrentValue = 16,
-   Callback = function(Value)
-       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-   end,
-})
+Section1:NewButton("Бесконечный прыжок", "Прыгай в воздухе", function()
+    game:GetService("UserInputService").JumpRequest:Connect(function()
+        game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end)
+end)
 
-Tab1:CreateButton({
-   Name = "Бесконечный прыжок",
-   Callback = function()
-       game:GetService("UserInputService").JumpRequest:Connect(function()
-           game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-       end)
-   end,
-})
+-- ВКЛАДКА ESP
+local Tab2 = Window:NewTab("ESP (Охота)")
+local Section2 = Tab2:NewSection("3 Кнопки")
 
--- ТРИ КНОПКИ ESP (УПРОЩЕННЫЕ)
-Tab2:CreateButton({
-   Name = "1. ПОДСВЕТИТЬ ТОРНАДО",
-   Callback = function()
-       for _, v in pairs(game.Workspace:GetDescendants()) do
-           if v.Name == "Tornado" or v.Name == "Twister" or v.Name:find("Storm") then
-               local p = Instance.new("Part", v)
-               p.Size = Vector3.new(20, 2000, 20)
-               p.Anchored = true
-               p.CanCollide = false
-               p.Color = Color3.fromRGB(255, 0, 0)
-               p.Transparency = 0.5
-               p.Material = "Neon"
-           end
-       end
-   end,
-})
+Section2:NewButton("1. ПОДСВЕТИТЬ ТОРНАДО", "Красный столб", function()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v.Name:lower():find("tornado") or v.Name:lower():find("twister") then
+            local p = Instance.new("Part", v)
+            p.Size = Vector3.new(30, 5000, 30)
+            p.Anchored = true
+            p.CanCollide = false
+            p.Color = Color3.fromRGB(255, 0, 0)
+            p.Material = "Neon"
+        end
+    end
+end)
 
-Tab2:CreateButton({
-   Name = "2. ПОДСВЕТИТЬ ЗОНДЫ",
-   Callback = function()
-       for _, v in pairs(game.Workspace:GetDescendants()) do
-           if v.Name:lower():find("probe") or v.Name:lower():find("sensor") then
-               local p = Instance.new("Part", v)
-               p.Size = Vector3.new(5, 1000, 5)
-               p.Anchored = true
-               p.CanCollide = false
-               p.Color = Color3.fromRGB(0, 255, 0)
-               p.Transparency = 0.5
-               p.Material = "Neon"
-           end
-       end
-   end,
-})
+Section2:NewButton("2. ПОДСВЕТИТЬ ЗОНДЫ", "Зеленый столб", function()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v.Name:lower():find("probe") or v.Name:lower():find("sensor") then
+            local p = Instance.new("Part", v)
+            p.Size = Vector3.new(10, 2000, 10)
+            p.Anchored = true
+            p.CanCollide = false
+            p.Color = Color3.fromRGB(0, 255, 0)
+            p.Material = "Neon"
+        end
+    end
+end)
 
-Tab2:CreateButton({
-   Name = "3. КУДА ДВИЖЕТСЯ",
-   Callback = function()
-       for _, v in pairs(game.Workspace:GetDescendants()) do
-           if v.Name == "Tornado" or v.Name == "Twister" then
-               local b = Instance.new("Part", workspace)
-               b.Size = Vector3.new(2, 2, 500)
-               b.Anchored = true
-               b.CanCollide = false
-               b.Color = Color3.fromRGB(0, 255, 255)
-               b.CFrame = v.CFrame * CFrame.new(0
+Section2:NewButton("3. КУДА ДВИЖЕТСЯ", "Синяя линия", function()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v.Name:lower():find("tornado") or v.Name:lower():find("twister") then
+            local b = Instance.new("Part", workspace)
+            b.Size = Vector3.new(5, 5, 800)
+            b.Anchored = true
+            b.CanCollide = false
+            b.Color = Color3.fromRGB(0, 255, 255)
+            b.
