@@ -1,4 +1,4 @@
-[ 7 травня 2026 р. 17:21 ] ⁨💚Синуля Ілля💚⁩: local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "👑 Eperty9 God Hub | Twisted",
