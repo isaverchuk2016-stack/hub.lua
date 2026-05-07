@@ -2,22 +2,17 @@
 
 local Window = Rayfield:CreateWindow({
    Name = "👑 Eperty9 God Hub | Twisted",
-   LoadingTitle = "Активация eperty9 Premium...",
-   LoadingSubtitle = "Anti-Cheat Bypass + Path",
+   LoadingTitle = "Финальная сборка eperty9...",
+   LoadingSubtitle = "Version 6.0 (Fixed ESP)",
    ConfigurationSaving = { Enabled = false }
 })
 
 local Tab1 = Window:CreateTab("Игрок", 4483362458)
 local Tab2 = Window:CreateTab("Охота (ESP)", 4483362458)
 
--- ПЕРСОНАЖ (ОБХОД АНТИЧИТА)
-local SectionSpeed = Tab1:CreateSection("Bypass Speed")
-
-_G.SpeedEnabled = false
-_G.SpeedValue = 16
-
+-- ВКЛАДКА ИГРОК
 Tab1:CreateToggle({
-   Name = "Активировать обход скорости",
+   Name = "Активировать обход скорости (Anti-Kick)",
    CurrentValue = false,
    Callback = function(Value)
        _G.SpeedEnabled = Value
@@ -41,58 +36,64 @@ Tab1:CreateSlider({
    Range = {1, 100},
    Increment = 1,
    CurrentValue = 16,
-   Callback = function(Value)
-       _G.SpeedValue = Value
-   end,
+   Callback = function(Value) _G.SpeedValue = Value end,
 })
-
--- INFINITE JUMP
-local InfiniteJumpEnabled = false
-game:GetService("UserInputService").JumpRequest:Connect(function()
-	if InfiniteJumpEnabled then
-		game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-	end
-end)
 
 Tab1:CreateToggle({
    Name = "Бесконечный прыжок",
    CurrentValue = false,
-   Callback = function(Value)
-       InfiniteJumpEnabled = Value
+   Callback = function(Value) _G.InfJump = Value end,
+})
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+	if _G.InfJump then
+		game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+	end
+end)
+
+-- ВКЛАДКА ESP (3 КНОПКИ)
+local SectionESP = Tab2:CreateSection("Визуалы")
+
+-- 1. Кнопка для Торнадо
+Tab2:CreateButton({
+   Name = "1. Подсветить ТОРНАДО (Красный)",
+   Callback = function()
+       for _, obj in pairs(game:GetDescendants()) do
+           if obj.Name:lower():find("tornado") or obj.Name:lower():find("twister") then
+               local hl = Instance.new("Highlight", obj)
+               hl.FillColor = Color3.fromRGB(255, 0, 0)
+               hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+           end
+       end
+       Rayfield:Notify({Title = "ESP", Content = "Торнадо подсвечено красным!"})
    end,
 })
 
--- ОХОТА И ТРАЕКТОРИЯ
+-- 2. Кнопка для Зондов (тех самых штук)
 Tab2:CreateButton({
-   Name = "Показать куда движется Торнадо",
+   Name = "2. Подсветить ЗОНДЫ (Зеленый)",
+   Callback = function()
+       for _, obj in pairs(game:GetDescendants()) do
+           if obj.Name:lower():find("probe") or obj.Name:lower():find("sensor") or obj.Name:lower():find("station") then
+               local hl = Instance.new("Highlight", obj)
+               hl.FillColor = Color3.fromRGB(0, 255, 0)
+               hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+           end
+       end
+       Rayfield:Notify({Title = "ESP", Content = "Зонды подсвечены зеленым!"})
+   end,
+})
+
+-- 3. Кнопка для Направления
+Tab2:CreateButton({
+   Name = "3. КУДА ДВИЖЕТСЯ (Линия)",
    Callback = function()
        for _, obj in pairs(game:GetDescendants()) do
            if obj.Name:lower():find("tornado") or obj.Name:lower():find("twister") then
                local root = obj:IsA("Model") and obj.PrimaryPart or obj
                if root then
-                   -- Рисуем линию пути
                    local beam = Instance.new("Part", workspace)
-                   beam.Size = Vector3.new(1, 1, 100)
+                   beam.Size = Vector3.new(2, 2, 300)
                    beam.Anchored = true
                    beam.CanCollide = false
-                   beam.Color = Color3.fromRGB(0, 170, 255)
-                   beam.Material = Enum.Material.Neon
-                   -- Ставим линию перед торнадо (направление)
-                   beam.CFrame = root.CFrame * CFrame.new(0, 0, -50)
-                   
-                   Rayfield:Notify({Title = "eperty9", Content = "Траектория отмечена синим цветом!"})
-               end
-           end
-       end
-   end,
-})
-
-Tab1:CreateButton({
-   Name = "Убрать туман",
-   Callback = function()
-       game:GetService("Lighting").FogEnd = 100000
-       if game:GetService("Lighting"):FindFirstChild("Atmosphere") then
-           game:GetService("Lighting").Atmosphere:Destroy()
-       end
-   end,
-})
+                   beam.Color = Color3.fromRGB(
